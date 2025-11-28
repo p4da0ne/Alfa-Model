@@ -24,8 +24,8 @@ export default function SHAPChart({ shap }) {
     }
     // Если массив объектов с полями feature/value или name/value
     chartData = shap.map((item, index) => ({
-      name: item.feature || item.name || `Feature ${index}`,
-      value: item.value || item.shap_value || 0,
+      name: item.feature ?? item.name ?? `Feature ${index}`,
+      value: item.value ?? item.shap_value ?? 0,
     }));
   } else {
     // Обработка объекта (ключ-значение)

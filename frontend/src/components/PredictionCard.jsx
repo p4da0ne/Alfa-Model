@@ -13,12 +13,12 @@ export default function PredictionCard({ data }) {
       <h2 className="text-xl font-bold text-white mb-4">Прогноз дохода</h2>
       
       <div className="text-4xl font-bold text-red-500">
-        {data.prediction || 'N/A'} ₽
+        {data.prediction ?? 'N/A'} ₽
       </div>
 
       <p className="text-gray-400 mt-2">
         KPI изменения дохода: 
-        <span className="text-white font-semibold"> {data.kpi || 'N/A'}%</span>
+        <span className="text-white font-semibold"> {data.kpi ?? 'N/A'}%</span>
       </p>
     </div>
   );

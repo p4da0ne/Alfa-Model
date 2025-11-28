@@ -25,7 +25,9 @@ export const getShapValues = async (features) => {
   return res.data;
 };
 
-export const fetchClientData = async (clientId) => {
-  const res = await api.get(`/client/${clientId}`);
+export const fetchClientData = async (clientId, signal) => {
+  const res = await api.get(`/client/${clientId}`, {
+    signal: signal,
+  });
   return res.data;
 };

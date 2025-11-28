@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import SearchBar from "../components/SearchBar";
 import PredictionCard from "../components/PredictionCard";
 import SHAPChart from "../components/SHAPChart";
@@ -10,23 +10,48 @@ export default function Dashboard() {
   const [client, setClient] = useState(null);
   const [error, setError] = useState("");
   const [searchResetTrigger, setSearchResetTrigger] = useState(0);
+  const abortControllerRef = useRef(null);
 
   const handleSearch = async (clientId) => {
+    // Отменяем предыдущий запрос, если он еще выполняется
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // Создаем новый AbortController для текущего запроса
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     setLoading(true);
     setError("");
     setClient(null);
 
     try {
-      const response = await fetchClientData(clientId);
-      setClient(response);
-      // Триггер для очистки поля поиска после успешного запроса
-      setSearchResetTrigger(prev => prev + 1);
+      const response = await fetchClientData(clientId, abortController.signal);
+      
+      // Проверяем, не был ли запрос отменен
+      if (!abortController.signal.aborted) {
+        setClient(response);
+        // Триггер для очистки поля поиска после успешного запроса
+        setSearchResetTrigger(prev => prev + 1);
+      }
     } catch (error) {
-      setError("Не удалось загрузить данные");
-      console.error("Ошибка загрузки данных:", error);
+      // Игнорируем ошибку, если запрос был отменен
+      if (error.name === 'AbortError' || error.name === 'CanceledError') {
+        return;
+      }
+      
+      // Проверяем, не был ли запрос отменен перед установкой ошибки
+      if (!abortController.signal.aborted) {
+        setError("Не удалось загрузить данные");
+        console.error("Ошибка загрузки данных:", error);
+      }
+    } finally {
+      // Обновляем состояние загрузки только если это последний запрос
+      if (!abortController.signal.aborted) {
+        setLoading(false);
+      }
     }
-
-    setLoading(false);
   };
 
   return (
