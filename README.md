@@ -37,7 +37,7 @@
 ```bash
 git clone https://github.com/user/project.git
 cd project
-
+```
 ## Run:
   - pip install -r requirements.txt
   - python src/ml/train.py   # trains model and saves model.pkl
