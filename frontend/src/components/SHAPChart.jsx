@@ -1,15 +1,34 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
-export default function SHAPChart({ data }) {
+export default function SHAPChart({ shap }) {
+  if (!shap || typeof shap !== 'object') {
+    return (
+      <div className="bg-[#1A1A1A] p-6 border border-red-700 rounded-2xl shadow-xl">
+        <h2 className="text-xl text-white font-bold mb-3">SHAP Contributions</h2>
+        <p className="text-gray-400">Нет данных для отображения</p>
+      </div>
+    );
+  }
+
+  const chartData = Object.entries(shap).map(([key, val]) => ({
+    name: key,
+    value: val,
+  }));
+
   return (
-    <div style={{ background: "#fefae0", padding: 20, borderRadius: 8 }}>
-      <h3>Почему модель решила именно так?</h3>
-      <BarChart width={600} height={300} data={data}>
-        <XAxis dataKey="feature" />
-        <YAxis />
-        <Tooltip />
-        <Bar dataKey="value" fill="#8884d8" />
-      </BarChart>
+    <div className="bg-[#1A1A1A] p-6 border border-red-700 rounded-2xl shadow-xl">
+      <h2 className="text-xl text-white font-bold mb-3">SHAP Contributions</h2>
+
+      <div style={{ width: "100%", height: 300 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData}>
+            <XAxis dataKey="name" stroke="#ccc" />
+            <YAxis stroke="#ccc" />
+            <Tooltip />
+            <Bar dataKey="value" fill="#ff2d2d" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

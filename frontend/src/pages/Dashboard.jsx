@@ -1,38 +1,49 @@
 import { useState } from "react";
-import ClientForm from "../components/ClientForm";
+import SearchBar from "../components/SearchBar";
 import PredictionCard from "../components/PredictionCard";
-import RecommendationList from "../components/RecommendationList";
 import SHAPChart from "../components/SHAPChart";
-import { predictIncome, getRecommendations, getShapValues } from "../api/api";
+import RecommendationList from "../components/RecommendationList";
+import { fetchClientData } from "../api/api";
 
 export default function Dashboard() {
-  const [income, setIncome] = useState(null);
-  const [recs, setRecs] = useState([]);
-  const [shap, setShap] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [client, setClient] = useState(null);
+  const [error, setError] = useState("");
 
-  const handlePredict = async (data) => {
+  const handleSearch = async (clientId) => {
+    setLoading(true);
+    setError("");
+    setClient(null);
 
-    const inc = await predictIncome(data);
-    setIncome(inc.prediction);
+    try {
+      const response = await fetchClientData(clientId);
+      setClient(response);
+    } catch (error) {
+      setError("Не удалось загрузить данные");
+      console.error("Ошибка загрузки данных:", error);
+    }
 
-    const r = await getRecommendations(inc.client_id || 1);
-    setRecs(r);
-
-    const shapData = await getShapValues(data);
-    setShap(shapData.values);
+    setLoading(false);
   };
 
   return (
-    <div style={{ padding: 32, maxWidth: 900, margin: "0 auto" }}>
-      <h1 style={{ marginBottom: 20 }}>AI-Доход + Финансовые рекомендации</h1>
+    <div className="p-10 bg-[#0D0D0D] min-h-screen text-white">
+      <h1 className="text-3xl font-bold mb-8 text-center">AI-Доход + Финансовые рекомендации</h1>
+      
+      <SearchBar onSearch={handleSearch} />
 
-      <ClientForm onSubmit={handlePredict} />
+      {loading && <p className="mt-6 text-gray-400">Загрузка...</p>}
+      {error && <p className="mt-6 text-red-500">{error}</p>}
 
-      {income && <PredictionCard value={income} />}
-
-      {recs.length > 0 && <RecommendationList items={recs} />}
-
-      {shap.length > 0 && <SHAPChart data={shap} />}
+      {client && (
+        <div className="mt-8 space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <PredictionCard data={client} />
+            <SHAPChart shap={client.shap_values} />
+          </div>
+          <RecommendationList items={client.recommendations} />
+        </div>
+      )}
     </div>
   );
 }

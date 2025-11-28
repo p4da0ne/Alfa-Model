@@ -20,3 +20,8 @@ export const getShapValues = async (features) => {
   });
   return res.data;
 };
+
+export const fetchClientData = async (clientId) => {
+  const res = await api.get(`/client/${clientId}`);
+  return res.data;
+};
