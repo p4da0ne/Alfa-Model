@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 export default function SearchBar({ onSearch, resetTrigger }) {
   const [id, setId] = useState("");
 
-  // Очистка поля при изменении resetTrigger
+  // Очистка поля при изменении resetTrigger (только после успешного поиска)
   useEffect(() => {
-    if (resetTrigger !== undefined) {
+    if (resetTrigger > 0) {
       setId("");
     }
   }, [resetTrigger]);
