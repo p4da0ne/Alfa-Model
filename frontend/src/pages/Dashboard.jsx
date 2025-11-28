@@ -9,6 +9,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [client, setClient] = useState(null);
   const [error, setError] = useState("");
+  const [searchResetTrigger, setSearchResetTrigger] = useState(0);
 
   const handleSearch = async (clientId) => {
     setLoading(true);
@@ -18,6 +19,8 @@ export default function Dashboard() {
     try {
       const response = await fetchClientData(clientId);
       setClient(response);
+      // Триггер для очистки поля поиска после успешного запроса
+      setSearchResetTrigger(prev => prev + 1);
     } catch (error) {
       setError("Не удалось загрузить данные");
       console.error("Ошибка загрузки данных:", error);
@@ -30,7 +33,7 @@ export default function Dashboard() {
     <div className="p-10 bg-[#0D0D0D] min-h-screen text-white">
       <h1 className="text-3xl font-bold mb-8 text-center">AI-Доход + Финансовые рекомендации</h1>
       
-      <SearchBar onSearch={handleSearch} />
+      <SearchBar onSearch={handleSearch} resetTrigger={searchResetTrigger} />
 
       {loading && <p className="mt-6 text-gray-400">Загрузка...</p>}
       {error && <p className="mt-6 text-red-500">{error}</p>}

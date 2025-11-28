@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function SearchBar({ onSearch }) {
+export default function SearchBar({ onSearch, resetTrigger }) {
   const [id, setId] = useState("");
+
+  // Очистка поля при изменении resetTrigger
+  useEffect(() => {
+    if (resetTrigger !== undefined) {
+      setId("");
+    }
+  }, [resetTrigger]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
