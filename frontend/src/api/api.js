@@ -1,7 +1,20 @@
 import axios from "axios";
 
+// В режиме разработки используем прокси через /api, в продакшене - полный URL
+const getBaseURL = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  // В режиме разработки используем прокси
+  if (import.meta.env.DEV) {
+    return "/api";
+  }
+  // В продакшене используем localhost по умолчанию
+  return "http://localhost:8000";
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
+  baseURL: getBaseURL(),
 });
 
 // Функции для альтернативного функционала (прямой ввод параметров через форму)

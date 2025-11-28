@@ -31,22 +31,25 @@ export default function Dashboard() {
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
 
+    // Сохраняем ссылку на signal для этого конкретного запроса
+    const currentSignal = abortController.signal;
+
     setLoading(true);
     setError("");
     setClient(null);
 
     try {
-      const response = await fetchClientData(clientId, abortController.signal);
+      const response = await fetchClientData(clientId, currentSignal);
       
-      // Проверяем, не был ли запрос отменен
-      if (!abortController.signal.aborted) {
+      // Проверяем, не был ли запрос отменен (используем сохраненный signal)
+      if (!currentSignal.aborted) {
         setClient(response);
         // Триггер для очистки поля поиска после успешного запроса
         setSearchResetTrigger(prev => prev + 1);
       }
     } catch (error) {
-      // Игнорируем ошибку, если запрос был отменен
-      if (error.name === 'AbortError' || error.name === 'CanceledError' || abortController.signal.aborted) {
+      // Игнорируем ошибку, если запрос был отменен (используем сохраненный signal)
+      if (error.name === 'AbortError' || error.name === 'CanceledError' || currentSignal.aborted) {
         return;
       }
       
@@ -54,7 +57,8 @@ export default function Dashboard() {
       console.error("Ошибка загрузки данных:", error);
     } finally {
       // Обновляем состояние загрузки только если это последний запрос (не был отменен)
-      if (!abortController.signal.aborted) {
+      // Проверяем, что текущий controller все еще активен
+      if (abortControllerRef.current === abortController && !currentSignal.aborted) {
         setLoading(false);
       }
     }
