@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import SearchBar from "../components/SearchBar";
 import PredictionCard from "../components/PredictionCard";
 import SHAPChart from "../components/SHAPChart";
@@ -11,6 +11,15 @@ export default function Dashboard() {
   const [error, setError] = useState("");
   const [searchResetTrigger, setSearchResetTrigger] = useState(0);
   const abortControllerRef = useRef(null);
+
+  // Очистка при размонтировании компонента
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
 
   const handleSearch = async (clientId) => {
     // Отменяем предыдущий запрос, если он еще выполняется
@@ -37,17 +46,14 @@ export default function Dashboard() {
       }
     } catch (error) {
       // Игнорируем ошибку, если запрос был отменен
-      if (error.name === 'AbortError' || error.name === 'CanceledError') {
+      if (error.name === 'AbortError' || error.name === 'CanceledError' || abortController.signal.aborted) {
         return;
       }
       
-      // Проверяем, не был ли запрос отменен перед установкой ошибки
-      if (!abortController.signal.aborted) {
-        setError("Не удалось загрузить данные");
-        console.error("Ошибка загрузки данных:", error);
-      }
+      setError("Не удалось загрузить данные");
+      console.error("Ошибка загрузки данных:", error);
     } finally {
-      // Обновляем состояние загрузки только если это последний запрос
+      // Обновляем состояние загрузки только если это последний запрос (не был отменен)
       if (!abortController.signal.aborted) {
         setLoading(false);
       }
