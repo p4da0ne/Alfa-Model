@@ -1,19 +1,21 @@
-FROM python:3.12
+# ===== Лёгкий и быстрый продакшен-образ =====
+FROM python:3.12-slim
 
-# Создаём рабочую директорию
 WORKDIR /app
 
-# Копируем зависимости
-COPY requirements.txt .
+# Устанавливаем только нужное
+RUN pip install --upgrade pip
 
-# Устанавливаем зависимости
+# Копируем только requirements сначала (кэширование слоёв)
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копируем код приложения
-COPY . .
+# Копируем код
+COPY backend/ .
 
-# Открываем порт
-EXPOSE 8000
-
-# Команда запуска
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Запускаем через gunicorn + uvicorn workers (лучше, чем просто uvicorn)
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", \
+     "--bind", "0.0.0.0:8000", \
+     "--workers", "2", \
+     "--worker-connections", "1000", \
+     "main:app"]
