@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import explain, predict, recommend
+from app.routers import predict, recommend
 
 app = FastAPI(title="Income Prediction API")
 
@@ -13,5 +13,5 @@ app.add_middleware(
 )
 
 app.include_router(predict.router, prefix="/predict", tags=["Predict"])
-app.include_router(recommend.router, prefix="/recommend", tags=["Recommend"])
+#app.include_router(recommend.router, prefix="/recommend", tags=["Recommend"])
 

@@ -2,6 +2,7 @@ import psycopg2
 import psycopg2.extras
 from typing import Dict, Any
 
+#Пример конфига
 DB_CONFIG = {
     "host": "localhost",
     "port": 5432,
