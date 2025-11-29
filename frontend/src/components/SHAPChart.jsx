@@ -3,9 +3,9 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recha
 export default function SHAPChart({ shap }) {
   if (!shap || typeof shap !== 'object') {
     return (
-      <div className="bg-[#1A1A1A] p-6 border border-red-700 rounded-2xl shadow-xl">
-        <h2 className="text-xl text-white font-bold mb-3">SHAP Contributions</h2>
-        <p className="text-gray-400">Нет данных для отображения</p>
+      <div className="alfa-shap-chart-container">
+        <h2>SHAP Contributions</h2>
+        <p>Нет данных для отображения</p>
       </div>
     );
   }
@@ -16,9 +16,9 @@ export default function SHAPChart({ shap }) {
   if (Array.isArray(shap)) {
     if (shap.length === 0) {
       return (
-        <div className="bg-[#1A1A1A] p-6 border border-red-700 rounded-2xl shadow-xl">
-          <h2 className="text-xl text-white font-bold mb-3">SHAP Contributions</h2>
-          <p className="text-gray-400">Нет данных для отображения</p>
+        <div className="alfa-shap-chart-container">
+          <h2>SHAP Contributions</h2>
+          <p>Нет данных для отображения</p>
         </div>
       );
     }
@@ -36,8 +36,8 @@ export default function SHAPChart({ shap }) {
   }
 
   return (
-    <div className="bg-[#1A1A1A] p-6 border border-red-700 rounded-2xl shadow-xl">
-      <h2 className="text-xl text-white font-bold mb-3">SHAP Contributions</h2>
+    <div className="alfa-shap-chart-container">
+      <h2>SHAP Contributions</h2>
 
       <div style={{ width: "100%", height: 300 }}>
         <ResponsiveContainer width="100%" height="100%">

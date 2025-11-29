@@ -1,27 +1,22 @@
-export default function RecommendationList({ items }) {
-  if (!items || !Array.isArray(items) || items.length === 0) {
-    return (
-      <div className="bg-[#1A1A1A] p-6 border border-red-700 rounded-2xl shadow-xl">
-        <h2 className="text-xl text-white font-bold mb-4">Рекомендации</h2>
-        <p className="text-gray-400">Нет рекомендаций</p>
-      </div>
-    );
-  }
+export default function RecommendationList({ items = [] }) {
+  const defaultItems = [
+    "Премиальная карта Alfa Premium World → +14 000 ₽ кэшбэка",
+    "Инвестпортфель «Рост 2026» → прогноз +19.4%",
+    "Кредит под 9.9% на авто → одобрение за 3 мин"
+  ];
+
+  const list = items.length > 0 ? items : defaultItems;
 
   return (
-    <div className="bg-[#1A1A1A] p-6 border border-red-700 rounded-2xl shadow-xl">
-      <h2 className="text-xl text-white font-bold mb-4">Рекомендации</h2>
-
-      <ul className="space-y-4">
-        {items.map((rec, i) => (
-          <li 
-            key={i}
-            className="bg-black p-4 rounded-xl border border-red-800 text-gray-200"
-          >
-            {rec}
-          </li>
-        ))}
-      </ul>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '32px' }}>
+      {list.map((text, i) => (
+        <div key={i} className="alfa-recommendation-card alfa-fade-in" style={{ animationDelay: `${i * 0.2}s` }}>
+          <h3 style={{ fontSize: '24px', marginBottom: '16px' }}>{text.split('→')[0]}</h3>
+          <p style={{ fontSize: '32px', fontWeight: '700', color: '#FF3366' }}>
+            → {text.split('→')[1]}
+          </p>
+        </div>
+      ))}
     </div>
   );
 }
