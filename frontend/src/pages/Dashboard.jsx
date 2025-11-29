@@ -8,14 +8,14 @@ import SearchBar from '../components/SearchBar';
 export default function Dashboard() {
   const [predictionData, setPredictionData] = useState(null);
 
-  const handlePredict = (formData) => {
+  const handlePredict = () => {
     setTimeout(() => {
       setPredictionData({
         name: "Петров Пётр Петрович",
         prediction: 5820000,
         kpi: 42,
         confidence: 94,
-        segment: "Premium+"
+        segment: "Premium+",
       });
     }, 1200);
   };
