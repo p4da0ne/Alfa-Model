@@ -8,7 +8,7 @@ with open("artifacts/metadata.json") as f:
     metadata = json.load(f)
     MODEL_VERSION = metadata["model_version"]
 
-MODEL_PATH = "../ml/artifacts/model.cbm"
+MODEL_PATH = "artifacts/model.cbm"
 
 def load_model():
     model = CatBoostRegressor()
