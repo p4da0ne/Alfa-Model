@@ -16,7 +16,7 @@ export default function PredictionCard({ data }) {
         <div className="client-info">
           <h2 className="client-name">{data.name || "Иванов Иван Иванович"}</h2>
           <div className="prediction-value">
-            {data.prediction.toLocaleString()} ₽
+            Прогнозируемый доход: {data.prediction.toLocaleString()} ₽
           </div>
           <div className="kpi-section">
             Изменение дохода: <span className="kpi-badge">+{data.kpi}%</span>

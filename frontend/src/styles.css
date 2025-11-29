@@ -130,9 +130,9 @@ body {
 }
 .search-input:focus {
   outline: none;
-  transform: scale(1.04);
+  transform: scale(1.02);
   border-color: #FF003D;
-  box-shadow: 0 0 70px rgba(255,0,61,0.4);
+  box-shadow: 0 0 20px rgba(255,0,61,0.4);
 }
 .search-btn, .back-to-home-btn{
   padding: 28px 90px;
@@ -143,11 +143,18 @@ body {
   border-radius: 34px;
   color: white;
   cursor: pointer;
-  box-shadow: 0 10px 20px rgba(255,0,61,0.5);
+  box-shadow: 0 10px 10px rgba(255,0,61,0.5);
   transition: all 0.7s ease;
 }
+
+.back-to-home-btn{
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+}
 .search-btn:hover {
-  transform: translateY(-10px) scale(1.06);
+  transform: translateY(-10px) scale(1.01);
   box-shadow: 0 4px 15px rgba(255, 0, 61, 0.18);
 }
 /* КАРТОЧКИ — теперь движение видно, но не раздражает */
@@ -168,8 +175,9 @@ body {
   backdrop-filter: blur(90px);
   border-radius: 38px;
   padding: 48px;
+  margin-bottom: 40px;
   border: 1.5px solid rgba(255,0,61,0.42);
-  box-shadow: 0 40px 90px rgba(0,0,0,0.7), 0 0 110px rgba(255,0,61,0.22);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7), 0 0 30px rgba(255,0,61,0.22);
   position: relative;
   overflow: hidden;
   animation: softPulse 16s ease-in-out infinite;
@@ -189,7 +197,7 @@ body {
 .shap-chart-card:hover,
 .client-form-card:hover {
   transform: translateY(-20px) scale(1.04);
-  box-shadow: 0 80px 160px rgba(0,0,0,0.9), 0 0 160px rgba(255,0,61,0.5);
+  box-shadow: 0 80px 40px rgba(0,0,0,0.9), 0 0 40px rgba(255,0,61,0.5);
 }
 
 /* Тексты */

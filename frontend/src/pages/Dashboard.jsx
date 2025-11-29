@@ -14,7 +14,7 @@ export default function Dashboard() {
     setClientData(null);
     setTimeout(() => {
       setClientData({
-        name: "Александр Смирнов",
+        name: "Артем Сергинко",
         prediction: 7842920,
         kpi: 38,
         confidence: 96,
@@ -82,7 +82,7 @@ export default function Dashboard() {
                 "Доход по НДФЛ": 2.41,
                 "Трудовая книжка": 1.82,
                 "Скоринг партнёров": 1.21,
-                "Возраст": -0.44,
+                "Возраст": 2.44,
                 "Регион": 0.67
               }} />
               <RecommendationList items={[]} />
