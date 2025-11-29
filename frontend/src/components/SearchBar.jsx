@@ -5,7 +5,9 @@ export default function SearchBar({ onSearch, resetTrigger }) {
   const [id, setId] = useState("");
 
   useEffect(() => {
-    if (resetTrigger > 0) setId("");
+    if (resetTrigger > 0) {
+      queueMicrotask(() => setId(""));
+    }
   }, [resetTrigger]);
 
   const handleSubmit = (e) => {
