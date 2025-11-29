@@ -13,6 +13,5 @@ app.add_middleware(
 )
 
 app.include_router(predict.router, prefix="/predict", tags=["Predict"])
-app.include_router(explain.router, prefix="/explain", tags=["Explain"])
 app.include_router(recommend.router, prefix="/recommend", tags=["Recommend"])
 

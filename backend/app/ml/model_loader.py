@@ -1,6 +1,7 @@
 import joblib
 import json
 import pandas as pd
+import shap
 from catboost import CatBoostRegressor
 
 with open("../ml/artifacts/metadata.json") as f:
@@ -15,4 +16,4 @@ def load_model():
     return model
 
 model = load_model()
-
+explainer = shap.TreeExplainer(model)
