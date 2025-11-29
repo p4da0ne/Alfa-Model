@@ -1,13 +1,11 @@
+// src/components/SearchBar.jsx
 import { useState, useEffect } from "react";
 
 export default function SearchBar({ onSearch, resetTrigger }) {
   const [id, setId] = useState("");
 
-  // Очистка поля при изменении resetTrigger (только после успешного поиска)
   useEffect(() => {
-    if (resetTrigger > 0) {
-      setId("");
-    }
+    if (resetTrigger > 0) setId("");
   }, [resetTrigger]);
 
   const handleSubmit = (e) => {
@@ -17,22 +15,17 @@ export default function SearchBar({ onSearch, resetTrigger }) {
   };
 
   return (
-    <form 
-      onSubmit={handleSubmit}
-      className="alfa-search-bar"
-    >
+    <>
       <input
         type="text"
-        placeholder="Введите client_id"
+        className="search-input"
+        placeholder="client_id"
         value={id}
         onChange={(e) => setId(e.target.value)}
       />
-
-      <button
-        type="submit"
-      >
+      <button onClick={handleSubmit} className="search-button">
         Найти
       </button>
-    </form>
+    </>
   );
 }

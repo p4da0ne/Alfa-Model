@@ -1,30 +1,61 @@
-export default function PredictionCard({ data }) {
-  if (!data) {
-    return (
-      <div className="alfa-card alfa-fade-in">
-        <h2 style={{ fontSize: '32px', marginBottom: '24px' }}>Прогноз дохода</h2>
-        <p style={{ opacity: 0.6, fontSize: '20px' }}>Введите данные клиента</p>
-      </div>
-    );
-  }
+// src/components/ClientForm.jsx
+import { useState } from "react";
+
+export default function ClientForm({ onSubmit }) {
+  const [age, setAge] = useState("");
+  const [employment, setEmployment] = useState("");
+  const [score, setScore] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!age || !employment || !score) return;
+    onSubmit({ age: Number(age), employment, score: Number(score) });
+  };
 
   return (
-    <div className="alfa-card alfa-fade-in">
-      <div style={{ display: 'flex', alignItems: 'center', gap: '50px' }}>
-        <div className="alfa-avatar" />
-        <div>
-          <h2 style={{ fontSize: '36px', margin: '0 0 20px 0', opacity: 0.9 }}>
-            {data.name || "Иванов Иван Иванович"}
-          </h2>
-          <div className="alfa-prediction-highlight">
-            {(data.prediction || 4820000).toLocaleString()} ₽
-          </div>
-          <div style={{ marginTop: '20px', fontSize: '32px' }}>
-            Изменение дохода:{' '}
-            <span className="alfa-kpi-indicator">+{(data.kpi || 28)}%</span>
-          </div>
-        </div>
-      </div>
+    <div className="form-glass-card">
+      <h2 className="form-title">Анализ клиента</h2>
+      <form onSubmit={handleSubmit} className="form-grid">
+        <InputField
+          label="Возраст"
+          type="number"
+          value={age}
+          onChange={setAge}
+          placeholder="35"
+        />
+        <InputField
+          label="Тип занятости"
+          type="text"
+          value={employment}
+          onChange={setEmployment}
+          placeholder="Официально, ИП, самозанятый..."
+        />
+        <InputField
+          label="Кредитный скоринг"
+          type="number"
+          value={score}
+          onChange={setScore}
+          placeholder="720"
+        />
+        <button type="submit" className="predict-btn">
+          <span>Предсказать доход</span>
+          <div className="btn-glow" />
+        </button>
+      </form>
+    </div>
+  );
+}
+
+function InputField({ label, value, onChange, ...props }) {
+  return (
+    <div className="input-wrapper">
+      <label className="input-label">{label}</label>
+      <input
+        className="glass-input"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        {...props}
+      />
     </div>
   );
 }
