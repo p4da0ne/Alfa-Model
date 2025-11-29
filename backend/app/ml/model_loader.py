@@ -4,7 +4,7 @@ import pandas as pd
 import shap
 from catboost import CatBoostRegressor
 
-with open("../ml/artifacts/metadata.json") as f:
+with open("artifacts/metadata.json") as f:
     metadata = json.load(f)
     MODEL_VERSION = metadata["model_version"]
 
