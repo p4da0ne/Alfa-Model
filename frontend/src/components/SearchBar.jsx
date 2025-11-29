@@ -1,33 +1,26 @@
 // src/components/SearchBar.jsx
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-export default function SearchBar({ onSearch, resetTrigger }) {
+export default function SearchBar({ onSearch }) {
   const [id, setId] = useState("");
-
-  useEffect(() => {
-    if (resetTrigger > 0) {
-      queueMicrotask(() => setId(""));
-    }
-  }, [resetTrigger]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!id.trim()) return;
-    onSearch(id);
+    if (id.trim()) onSearch(id);
   };
 
   return (
-    <>
+    <form onSubmit={handleSubmit} className="search-wrapper">
       <input
         type="text"
         className="search-input"
-        placeholder="client_id"
+        placeholder="Введите клиент-айди"
         value={id}
         onChange={(e) => setId(e.target.value)}
       />
-      <button onClick={handleSubmit} className="search-button">
-        Найти
+      <button type="submit" className="search-btn">
+        Анализ
       </button>
-    </>
+    </form>
   );
 }
