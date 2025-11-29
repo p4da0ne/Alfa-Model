@@ -3,9 +3,9 @@
 
 
 ## Команда разработки: 
-1. 💄Frontend –– https://t.me/wllmr0
-2. ⚙️Backend  –– https://t.me/p4da1s
-3. 🧠ML       –– https://t.me/Scrip0_chka
+1. 💄Frontend — https://t.me/wllmr0
+2. ⚙️Backend  – https://t.me/p4da1s
+3. 🧠ML       – https://t.me/Scrip0_chka
 
 
 
