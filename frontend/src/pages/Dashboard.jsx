@@ -65,17 +65,17 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-10 bg-[#0D0D0D] min-h-screen text-white">
-      <h1 className="text-3xl font-bold mb-8 text-center">AI-Доход + Финансовые рекомендации</h1>
+    <div className="alfa-dashboard-container">
+      <h1 className="alfa-dashboard-title">AI-Доход & Финансовые рекомендации</h1>
       
       <SearchBar onSearch={handleSearch} resetTrigger={searchResetTrigger} />
 
-      {loading && <p className="mt-6 text-gray-400">Загрузка...</p>}
-      {error && <p className="mt-6 text-red-500">{error}</p>}
+      {loading && <p className="alfa-loading">Загрузка...</p>}
+      {error && <p className="alfa-error">{error}</p>}
 
       {client && (
-        <div className="mt-8 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="alfa-fade-in">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px', marginBottom: '24px' }}>
             <PredictionCard data={client} />
             <SHAPChart shap={client.shap_values} />
           </div>
