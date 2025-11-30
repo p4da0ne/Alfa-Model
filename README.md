@@ -22,6 +22,14 @@
 
 ## 🧩 Архитектура решения
 
+ALFA-MODEL
+├── backend/app/main.py          ← FastAPI + ML
+├── backend/app/routers          ← роутеры
+├── backend/app/ml/              ← модели, загрузчик
+├── frontend/src/                ← Vite + React + Tailwind
+├── nginx/nginx.conf             ← прокси / → frontend, /api → backend
+├── docker-compose.yml           ← docker compose up --build → всё работает ~~(если повезет)~~
+└── README.md
 
 ---
 

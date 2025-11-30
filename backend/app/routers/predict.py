@@ -24,7 +24,7 @@ async def predict_with_explanation(payload: PredictRequest, top_n: int = 5):
     if payload.features:
         features.update(payload.features)
 
-    prediction = predict_income(features)
+    prediction = predict_income(features, top_n)
     prediction["income_raise_percents"] = calculate_income_raise(features["incomeValue"], prediction["prediction"])
 
     return prediction
