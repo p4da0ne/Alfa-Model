@@ -17,4 +17,3 @@ def load_model():
 
 model = load_model()
 explainer = shap.TreeExplainer(model)
-print(model.feature_names_)

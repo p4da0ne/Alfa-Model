@@ -50,13 +50,14 @@ export default function Dashboard() {
       let requestPayload;
       
       if (!isNaN(clientId)) {
-        // Если введен числовой ID, используем client_id
+        // Если введен числовой ID (включая 0), используем client_id
         requestPayload = { client_id: clientId };
       } else {
         // Если не число, возвращаем ошибку
         throw new Error("Введите числовой ID клиента или используйте форму для ввода параметров");
       }
 
+      console.log('Отправка запроса:', requestPayload);
       const response = await predictIncome(requestPayload);
       
       // Преобразуем данные из API в формат компонентов
@@ -66,7 +67,7 @@ export default function Dashboard() {
         kpi: Math.round(response.income_raise || 0),
         confidence: Math.round(response.confidence || 0),
         segment: getSegment(response.prediction),
-        shap: response.shap_top || response.shap_values || {},
+        shap: response.shap_values || response.shap_top || {},
         shapFormatted: Object.entries(response.shap_top || response.shap_values || {}).reduce((acc, [key, value]) => {
           acc[formatFeatureName(key)] = value;
           return acc;
@@ -76,7 +77,44 @@ export default function Dashboard() {
       setClientData(formattedData);
     } catch (err) {
       console.error('Ошибка при получении предсказания:', err);
-      setError(err.response?.data?.detail || err.message || 'Произошла ошибка при получении предсказания');
+      
+      // Обработка ошибок валидации FastAPI (422) и серверных ошибок (500)
+      let errorMessage = 'Произошла ошибка при получении предсказания';
+      
+      if (err.response) {
+        const data = err.response.data;
+        const status = err.response.status;
+        
+        if (status === 422) {
+          // Ошибка валидации - показываем детали
+          if (Array.isArray(data.detail)) {
+            const validationErrors = data.detail.map(e => {
+              const field = e.loc ? e.loc.join('.') : 'поле';
+              return `${field}: ${e.msg}`;
+            }).join(', ');
+            errorMessage = `Ошибка валидации: ${validationErrors}`;
+          } else if (data.detail) {
+            errorMessage = `Ошибка валидации: ${typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail)}`;
+          }
+        } else if (status === 500) {
+          // Серверная ошибка
+          if (data.detail) {
+            errorMessage = `Ошибка сервера: ${typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail)}`;
+          } else if (data.message) {
+            errorMessage = `Ошибка сервера: ${data.message}`;
+          } else {
+            errorMessage = 'Внутренняя ошибка сервера. Проверьте логи бэкенда.';
+          }
+        } else if (data.detail) {
+          errorMessage = typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail);
+        } else if (data.message) {
+          errorMessage = data.message;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

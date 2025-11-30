@@ -1,20 +1,22 @@
 import axios from "axios";
 
-// В режиме разработки используем прокси через /api, в продакшене - полный URL
+// Всегда используем относительный путь /api, который проксируется через nginx
+// В Docker-окружении nginx проксирует /api/ на backend:8000
 const getBaseURL = () => {
+  // Если задан явный URL через переменную окружения, используем его
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
-  // В режиме разработки используем прокси
-  if (import.meta.env.DEV) {
-    return "/api";
-  }
-  // В продакшене используем localhost по умолчанию
-  return "http://localhost:3000";
+  // В продакшене и разработке используем относительный путь /api
+  // Nginx проксирует /api/ на backend:8000
+  return "/api";
 };
 
 const api = axios.create({
   baseURL: getBaseURL(),
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // Функции для альтернативного функционала (прямой ввод параметров через форму)
@@ -22,7 +24,8 @@ const api = axios.create({
 // Могут быть использованы при интеграции ClientForm компонента
 
 export const predictIncome = async (features) => {
-  const res = await api.post("/predict", features);
+  // Роутер имеет префикс /predict, endpoint это /, поэтому путь /predict/
+  const res = await api.post("/predict/", features);
   return res.data;
 };
 
