@@ -12,7 +12,7 @@ def calculate_income_raise(income: float, predict: float):
     income_raise_percent = round(income_raise * 100, 1)
     return income_raise_percent
 
-@router.post("/", response_model = PredictResponse)                             #Порядок признаков для загрузки в модель -> ../ml/artifacts/feature_schema.json
+@router.post("/", response_model = PredictResponse)                             #Порядок признаков для загрузки в модель -> ml/artifacts/feature_schema.json
 async def predict_with_explanation(payload: PredictRequest, top_n: int = 5):
     if payload.client_id:
         db_features = get_features(payload.client_id)

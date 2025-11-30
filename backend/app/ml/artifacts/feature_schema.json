@@ -220,7 +220,7 @@
   "transaction_category_supermarket_sum_cnt_d15",
   "max_balance_rur_amt_1m_af"
     ],
- "cat_features":[
+ "categorical_features":[
     "gender",
     "adminarea",
     "city_smart_name",

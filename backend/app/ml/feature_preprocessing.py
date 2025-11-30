@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import numpy as np
 
-with open("../ml/artifacts/feature_schema.json") as f:
+with open("/app/app/ml/artifacts/feature_schema.json") as f:
     schema = json.load(f)
 
 FEATURE_ORDER = schema["feature_order"]

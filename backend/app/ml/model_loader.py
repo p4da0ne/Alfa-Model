@@ -4,11 +4,11 @@ import pandas as pd
 import shap
 from catboost import CatBoostRegressor
 
-with open("artifacts/metadata.json") as f:
+with open("/app/app/ml/artifacts/metadata.json") as f:
     metadata = json.load(f)
     MODEL_VERSION = metadata["model_version"]
 
-MODEL_PATH = "artifacts/model.cbm"
+MODEL_PATH = "/app/app/ml/artifacts/catboost_income_110k.cbm"
 
 def load_model():
     model = CatBoostRegressor()
@@ -17,3 +17,4 @@ def load_model():
 
 model = load_model()
 explainer = shap.TreeExplainer(model)
+print(model.feature_names_)

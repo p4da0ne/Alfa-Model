@@ -10,7 +10,7 @@ const getBaseURL = () => {
     return "/api";
   }
   // В продакшене используем localhost по умолчанию
-  return "http://localhost:8000";
+  return "http://localhost:3000";
 };
 
 const api = axios.create({

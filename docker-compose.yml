@@ -4,15 +4,15 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     volumes:
-      - frontend-build:/dist
+      - ./frontend:/app
+      - /app/node_modules
 
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    expose:
-      - "8000"
-    restart: unless-stopped
+    volumes:
+      - ./backend:/app
 
   nginx:
     image: nginx:alpine
@@ -22,8 +22,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - frontend-build:/usr/share/nginx/html:ro
     depends_on:
-      - backend
       - frontend
+      - backend
 
 volumes:
   frontend-build:
