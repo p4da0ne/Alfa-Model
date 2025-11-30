@@ -16,15 +16,15 @@ def prepare_features(raw: dict) -> pd.DataFrame:
         if val is None or (isinstance(val, float) and np.isnan(val)) or (isinstance(val, str) and val.strip() == "") or (isinstance(val, str) and val.strip() == "None"):
             val = "missing"
         if isinstance(val, str):
-            val = val.replace(",", ".")  # заменяем запятую на точку
+            val = val.replace(",", ".")
             try:
                 val = float(val)
             except ValueError:
-                val = 0  # если не удалось преобразовать → 0
+                val = 0
         elif isinstance(val, (int, float)):
             val = float(val)
         else:
-            val = 0  # для всех других типов
+            val = 0
         cleaned_data.append(val)
 
     df = pd.DataFrame([cleaned_data], columns=FEATURE_ORDER)

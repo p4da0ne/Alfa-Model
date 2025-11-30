@@ -190,6 +190,11 @@ body {
   70%  { transform: translateY(6px) rotate(-0.5deg); }
 }
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* При наведении — красиво и заметно */
 .project-card:hover,
 .prediction-main-card:hover,

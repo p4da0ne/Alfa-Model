@@ -1,29 +1,91 @@
-// src/pages/Dashboard.jsx — только добавлена кнопка
+// src/pages/Dashboard.jsx
 import { useState, useMemo } from 'react';
 import SearchBar from '../components/SearchBar';
 import PredictionCard from '../components/PredictionCard';
 import RecommendationList from '../components/RecommendationList';
 import SHAPChart from '../components/SHAPChart';
 import EmptyStateCards from '../components/EmptyStateCards';
+import { predictIncome } from '../api/api';
 
 export default function Dashboard() {
   const [clientData, setClientData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSearch = (id) => {
-    if (!id?.trim()) return;
-    setClientData(null);
-    setTimeout(() => {
-      setClientData({
-        name: "Артем Сергинко",
-        prediction: 7842920,
-        kpi: 38,
-        confidence: 96,
-        segment: "Ultra Premium"
-      });
-    }, 2200);
+  // Функция для определения сегмента клиента на основе дохода
+  const getSegment = (income) => {
+    if (income >= 5000000) return "Ultra Premium";
+    if (income >= 2000000) return "Premium";
+    if (income >= 1000000) return "Gold";
+    if (income >= 500000) return "Silver";
+    return "Standard";
   };
 
-  const handleBack = () => setClientData(null);
+  // Функция для форматирования названий признаков для отображения
+  const formatFeatureName = (key) => {
+    const featureNames = {
+      "incomeValue": "Текущий доход",
+      "age": "Возраст",
+      "adminarea": "Регион",
+      "gender": "Пол",
+      "salary_6to12m_avg": "Средняя зарплата (6-12 мес)",
+      "dp_ils_avg_salary_1y": "Средняя зарплата за год",
+      "hdb_bki_total_max_limit": "Максимальный лимит по БКИ",
+      "turn_cur_cr_avg_act_v2": "Оборот по кредитам",
+      "dp_ils_paymentssum_avg_12m": "Средние платежи за 12 мес",
+    };
+    return featureNames[key] || key;
+  };
+
+  const handleSearch = async (id) => {
+    if (!id?.trim()) return;
+    
+    setClientData(null);
+    setError(null);
+    setLoading(true);
+
+    try {
+      // Пытаемся использовать client_id, если это число
+      const clientId = parseInt(id.trim());
+      let requestPayload;
+      
+      if (!isNaN(clientId)) {
+        // Если введен числовой ID, используем client_id
+        requestPayload = { client_id: clientId };
+      } else {
+        // Если не число, возвращаем ошибку
+        throw new Error("Введите числовой ID клиента или используйте форму для ввода параметров");
+      }
+
+      const response = await predictIncome(requestPayload);
+      
+      // Преобразуем данные из API в формат компонентов
+      const formattedData = {
+        name: `Клиент #${id.trim()}`,
+        prediction: Math.round(response.prediction),
+        kpi: Math.round(response.income_raise || 0),
+        confidence: Math.round(response.confidence || 0),
+        segment: getSegment(response.prediction),
+        shap: response.shap_top || response.shap_values || {},
+        shapFormatted: Object.entries(response.shap_top || response.shap_values || {}).reduce((acc, [key, value]) => {
+          acc[formatFeatureName(key)] = value;
+          return acc;
+        }, {})
+      };
+
+      setClientData(formattedData);
+    } catch (err) {
+      console.error('Ошибка при получении предсказания:', err);
+      setError(err.response?.data?.detail || err.message || 'Произошла ошибка при получении предсказания');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBack = () => {
+    setClientData(null);
+    setError(null);
+  };
 
   const stars = useMemo(() => {
     // Используем сидированный псевдослучайный генератор для стабильности между рендерами
@@ -75,21 +137,49 @@ export default function Dashboard() {
       <div className="alfa-dashboard-container">
         <h1 className="alfa-title">АЛЬФА</h1>
         <p className="alfa-subtitle">Income Prediction Intelligence</p>
-        <SearchBar onSearch={handleSearch} />
+        <SearchBar onSearch={handleSearch} disabled={loading} />
 
-        {!clientData ? (
+        {error && (
+          <div className="error-message" style={{
+            background: 'rgba(255, 0, 61, 0.1)',
+            border: '1px solid #FF003D',
+            borderRadius: '12px',
+            padding: '16px',
+            margin: '20px 0',
+            color: '#FF6699'
+          }}>
+            <strong>Ошибка:</strong> {error}
+          </div>
+        )}
+
+        {loading && (
+          <div className="loading-message" style={{
+            textAlign: 'center',
+            padding: '40px',
+            color: '#FF6699',
+            fontSize: '18px'
+          }}>
+            <div className="loading-spinner" style={{
+              display: 'inline-block',
+              width: '40px',
+              height: '40px',
+              border: '4px solid rgba(255, 102, 153, 0.3)',
+              borderTop: '4px solid #FF6699',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              marginBottom: '16px'
+            }}></div>
+            <p>Анализируем данные клиента...</p>
+          </div>
+        )}
+
+        {!clientData && !loading ? (
           <EmptyStateCards />
-        ) : (
+        ) : clientData ? (
           <>
             <div className="result-container">
               <PredictionCard data={clientData} />
-              <SHAPChart shap={{
-                "Доход по НДФЛ": 2.41,
-                "Трудовая книжка": 1.82,
-                "Скоринг партнёров": 1.21,
-                "Возраст": 2.44,
-                "Регион": 0.67
-              }} />
+              <SHAPChart shap={clientData.shapFormatted || clientData.shap} />
               <RecommendationList items={[]} />
             </div>
 
@@ -98,7 +188,7 @@ export default function Dashboard() {
               ← На главную
             </button>
           </>
-        )}
+        ) : null}
       </div>
     </>
   );

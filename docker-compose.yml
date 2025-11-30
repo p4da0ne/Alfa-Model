@@ -4,8 +4,7 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - frontend-build:/volume
 
   backend:
     build:

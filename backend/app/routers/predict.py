@@ -25,6 +25,12 @@ async def predict_with_explanation(payload: PredictRequest, top_n: int = 5):
         features.update(payload.features)
 
     prediction = predict_income(features, top_n)
-    prediction["income_raise_percents"] = calculate_income_raise(features["incomeValue"], prediction["prediction"])
+    
+    # Вычисляем изменение дохода только если есть текущий доход
+    current_income = features.get("incomeValue", 0)
+    if current_income and current_income > 0:
+        prediction["income_raise"] = int(calculate_income_raise(current_income, prediction["prediction"]))
+    else:
+        prediction["income_raise"] = 0
 
     return prediction
