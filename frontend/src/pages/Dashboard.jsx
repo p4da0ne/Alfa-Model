@@ -26,12 +26,17 @@ export default function Dashboard() {
   const handleBack = () => setClientData(null);
 
   const stars = useMemo(() => {
+    // Используем сидированный псевдослучайный генератор для стабильности между рендерами
+    function seededRandom(seed) {
+      let x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    }
     return [...Array(60)].map((_, i) => {
-      const randomTop = 10 + Math.random() * 130;
-      const randomDelay = Math.random() * 8;
-      const randomDuration = 5 + Math.random() * 6;
-      const isBig = Math.random() > 0.7;
-      const isBright = Math.random() > 0.5;
+      const randomTop = 10 + seededRandom(i * 5 + 1) * 130;
+      const randomDelay = seededRandom(i * 5 + 2) * 8;
+      const randomDuration = 5 + seededRandom(i * 5 + 3) * 6;
+      const isBig = seededRandom(i * 5 + 4) > 0.7;
+      const isBright = seededRandom(i * 5 + 5) > 0.5;
       return {
         id: i,
         left: `${i * 1.7}%`,
