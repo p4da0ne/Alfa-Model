@@ -29,7 +29,7 @@ ALFA-MODEL\
 ├── frontend/src/                ← Vite + React + Tailwind\
 ├── nginx/nginx.conf             ← прокси / → frontend, /api → backend\
 ├── docker-compose.yml           ← docker compose up --build → всё работает ~~(если повезет)~~\
-└── README.md\
+└── README.md
 
 ---
 
