@@ -99,13 +99,7 @@ docker compose up --build
 curl -X POST "http://localhost/api/predict/" \
   -H "Content-Type: application/json" \
   -d '{
-    "features": {
-      "age": 35,
-      "incomeValue": 1000000,
-      "gender": 1,
-      "adminarea": "Москва",
-      "salary_6to12m_avg": 950000
-    }
+    "client_id": 1
   }'
 ```
 
