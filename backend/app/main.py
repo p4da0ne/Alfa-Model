@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from app.routers import predict, recommend
+
+PARQUET_PATH = "app/ml/ml-resources/hackathon_income_test_processed.parquet"
 
 app = FastAPI(title="Income Prediction API")
 

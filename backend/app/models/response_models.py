@@ -2,12 +2,11 @@ from pydantic import BaseModel
 from typing import List, Dict
 
 class PredictResponse(BaseModel):
-    prediction: float
+    client_id: int
+    predicted_income_rub: float
+    predicted_income_log: float
+    shap_top_5: dict
     confidence: float
-    model_version: str
-    shap_values: dict
-    shap_top: dict
-    income_raise: int
 
 
 class RecommendationsResponse(BaseModel):
