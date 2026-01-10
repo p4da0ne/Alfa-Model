@@ -19,3 +19,4 @@ features_df.index = features_df.index.astype(int)  # на всякий id как
 print(f"Parquet загружен глобально: {features_df.shape}")
 
 explainer = shap.TreeExplainer(model)
+

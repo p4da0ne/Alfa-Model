@@ -99,4 +99,6 @@ pred_val = model.predict(X_val)
 def wmae(y_true, y_pred, weights):
     return np.sum(weights * np.abs(y_true - y_pred)) / np.sum(weights)
 
+print(model.feature_names_)
+
 print("Ручной WMAE:", wmae(y_val, pred_val, w_val))
