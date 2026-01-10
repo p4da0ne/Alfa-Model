@@ -17,8 +17,16 @@ def get_shap(client_id: int, top_n: int = 5):
     shap_values = explainer.shap_values(row_df_pipelined)
     shap_dict = dict(zip(row_df_pipelined.columns, shap_values[0]))
     
-    # Топ положительных/отрицательных
-    top_features = dict(sorted(shap_dict.items(), key=lambda x: abs(x[1]), reverse=True)[:top_n])
+    # Топ положительных/отрицательных - преобразуем в список объектов
+    sorted_features = sorted(shap_dict.items(), key=lambda x: abs(x[1]), reverse=True)[:top_n]
+    top_features = [
+        {
+            "feature": feature_name,
+            "value": round(float(shap_value), 4),
+            "impact": "positive" if shap_value > 0 else "negative"
+        }
+        for feature_name, shap_value in sorted_features
+    ]
     
     return top_features
 
@@ -38,8 +46,7 @@ def predict_income(client_id: int) -> dict:
     
     return {
         "client_id": client_id,
-        "predicted_income_rub": float(pred_rub),
-        "predicted_income_log": float(pred_log),  # для дебага
+        "predicted_income_rub": round(float(pred_rub), 2),
         "shap_top_5": get_shap(client_id),
-        "confidence": confidence
+        "confidence": round(confidence, 1)
     }

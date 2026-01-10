@@ -1,11 +1,15 @@
 from pydantic import BaseModel
 from typing import List, Dict
 
+class ShapFeature(BaseModel):
+    feature: str
+    value: float
+    impact: str  # "positive" or "negative"
+
 class PredictResponse(BaseModel):
     client_id: int
     predicted_income_rub: float
-    predicted_income_log: float
-    shap_top_5: dict
+    shap_top_5: List[ShapFeature]
     confidence: float
 
 
