@@ -61,17 +61,35 @@ export default function Dashboard() {
       const response = await predictIncome(requestPayload);
       
       // Преобразуем данные из API в формат компонентов
-      const formattedData = {
-        name: `Клиент #${id.trim()}`,
-        prediction: Math.round(response.prediction),
-        kpi: Math.round(response.income_raise || 0),
-        confidence: Math.round(response.confidence || 0),
-        segment: getSegment(response.prediction),
-        shap: response.shap_values || response.shap_top || {},
-        shapFormatted: Object.entries(response.shap_top || response.shap_values || {}).reduce((acc, [key, value]) => {
+      const predictedIncome = response.predicted_income_rub || response.prediction || 0;
+      const shapData = response.shap_top_5 || response.shap_values || response.shap_top || [];
+      
+      // Преобразуем shap_top_5 (список объектов) в формат для компонентов
+      let shapFormatted = {};
+      if (Array.isArray(shapData)) {
+        shapFormatted = shapData.reduce((acc, item) => {
+          const featureName = item.feature || item.name;
+          const value = item.value || item.shap_value || 0;
+          if (featureName) {
+            acc[formatFeatureName(featureName)] = value;
+          }
+          return acc;
+        }, {});
+      } else if (typeof shapData === 'object') {
+        shapFormatted = Object.entries(shapData).reduce((acc, [key, value]) => {
           acc[formatFeatureName(key)] = value;
           return acc;
-        }, {})
+        }, {});
+      }
+      
+      const formattedData = {
+        name: `Клиент #${id.trim()}`,
+        prediction: Math.round(predictedIncome),
+        kpi: Math.round(response.income_raise || 0),
+        confidence: Math.round(response.confidence || 0),
+        segment: getSegment(predictedIncome),
+        shap: shapData,
+        shapFormatted: shapFormatted
       };
 
       setClientData(formattedData);
